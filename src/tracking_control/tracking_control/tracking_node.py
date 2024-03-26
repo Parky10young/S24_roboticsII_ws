@@ -160,34 +160,38 @@ class TrackingNode(Node):
         self.pub_control_cmd.publish(cmd_vel)
         #################################################
     
-def controller(self):
-        # Get the current object pose in the robot base_footprint frame
-        current_object_pose = self.get_current_object_pose()
-        
-        # Calculate the x-distance error
-        x_distance = current_object_pose[0]
-        x_error = self.desired_x_distance - x_distance
-        
-        # PID controller for linear velocity
-        self.integral_linear += x_error
-        derivative_linear = x_error - self.prev_error_linear
-        linear_output = self.kp_linear * x_error + self.ki_linear * self.integral_linear + self.kd_linear * derivative_linear
-        self.prev_error_linear = x_error
-        
-        # Calculate the angular error
-        y_distance = current_object_pose[1]
-        angular_error = math.atan2(y_distance, x_distance)
-        
-        # P controller for angular velocity
-        angular_output = self.kp_angular * angular_error
-        
-        # Update the control velocity command
-        cmd_vel = Twist()
-        cmd_vel.linear.x = linear_output
-        cmd_vel.linear.y = 0.0
-        cmd_vel.angular.z = angular_output
-        
-        return cmd_vel
+    def controller(self):
+            # Get the current object pose in the robot base_footprint frame
+            current_object_pose = self.get_current_object_pose()
+            
+            # Calculate the x-distance error
+            x_distance = current_object_pose[0]
+            x_error = self.desired_x_distance - x_distance
+            
+            print("distance error",x_error)
+
+            # PID controller for linear velocity
+            self.integral_linear += x_error
+            derivative_linear = x_error - self.prev_error_linear
+            linear_output = self.kp_linear * x_error + self.ki_linear * self.integral_linear + self.kd_linear * derivative_linear
+            self.prev_error_linear = x_error
+            
+            # Calculate the angular error
+            y_distance = current_object_pose[1]
+            angular_error = math.atan2(y_distance, x_distance)
+
+            print("angular error",angular_error)
+            
+            # P controller for angular velocity
+            angular_output = self.kp_angular * angular_error
+            
+            # Update the control velocity command
+            cmd_vel = Twist()
+            cmd_vel.linear.x = linear_output
+            cmd_vel.linear.y = 0.0
+            cmd_vel.angular.z = angular_output
+            
+            return cmd_vel
 
     
         ############################################
