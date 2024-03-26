@@ -146,6 +146,7 @@ class TrackingNode(Node):
             cmd_vel.linear.x = 0.0
             cmd_vel.angular.z = 0.0
             self.pub_control_cmd.publish(cmd_vel)
+            print("trakcing lost")
             return
         
         # Get the current object pose in the robot base_footprint frame
@@ -169,6 +170,7 @@ class TrackingNode(Node):
         # Calculate the distance error
         distance = np.linalg.norm(current_object_pose)
         error = self.desired_distance - distance
+        print("tracking error",error)
         
         # PID controller
         self.integral += error
