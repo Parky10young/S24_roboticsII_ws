@@ -81,12 +81,13 @@ class TrackingNode(Node):
         self.sub_detected_obj_pose = self.create_subscription(PoseStamped, '/detected_color_object_pose', self.detected_obj_pose_callback, 10)
         
         # PID controller parameters
-        self.kp = 0.5  # Proportional gain
-        self.ki = 0.01  # Integral gain
-        self.kd = 0.1  # Derivative gain
-        self.prev_error = 0.0
-        self.integral = 0.0
-        self.desired_distance = 40.0  # Desired distance to maintain from the object
+        self.kp_linear = 0.5  # Proportional gain for linear velocity
+        self.ki_linear = 0.01  # Integral gain for linear velocity
+        self.kd_linear = 0.1  # Derivative gain for linear velocity
+        self.kp_angular = 1.0  # Proportional gain for angular velocity
+        self.prev_error_linear = 0.0
+        self.integral_linear = 0.0
+        self.desired_x_distance = 0.4  # Desired x-distance to maintain from the object
         
         # Create timer, running at 100Hz
         self.timer = self.create_timer(0.01, self.timer_update)
@@ -159,31 +160,35 @@ class TrackingNode(Node):
         self.pub_control_cmd.publish(cmd_vel)
         #################################################
     
-    def controller(self):
-        # Instructions: You can implement your own control algorithm here
-        # feel free to modify the code structure, add more parameters, more input variables for the function, etc.
-        
-        ########### Write your code here ###########
-         # Get the current object pose in the robot base_footprint frame
+def controller(self):
+        # Get the current object pose in the robot base_footprint frame
         current_object_pose = self.get_current_object_pose()
         
-        # Calculate the distance error
-        distance = np.linalg.norm(current_object_pose)
-        error = self.desired_distance - distance
-        print("tracking error",error)
+        # Calculate the x-distance error
+        x_distance = current_object_pose[0]
+        x_error = self.desired_x_distance - x_distance
         
-        # PID controller
-        self.integral += error
-        derivative = error - self.prev_error
-        control_output = self.kp * error + self.ki * self.integral + self.kd * derivative
-        self.prev_error = error
+        # PID controller for linear velocity
+        self.integral_linear += x_error
+        derivative_linear = x_error - self.prev_error_linear
+        linear_output = self.kp_linear * x_error + self.ki_linear * self.integral_linear + self.kd_linear * derivative_linear
+        self.prev_error_linear = x_error
         
-        # TODO: Update the control velocity command
+        # Calculate the angular error
+        y_distance = current_object_pose[1]
+        angular_error = math.atan2(y_distance, x_distance)
+        
+        # P controller for angular velocity
+        angular_output = self.kp_angular * angular_error
+        
+        # Update the control velocity command
         cmd_vel = Twist()
-        cmd_vel.linear.x = control_output
+        cmd_vel.linear.x = linear_output
         cmd_vel.linear.y = 0.0
-        cmd_vel.angular.z = 0.0
+        cmd_vel.angular.z = angular_output
+        
         return cmd_vel
+
     
         ############################################
 
