@@ -1,11 +1,12 @@
 # S24_roboticsII
 ROS2 Workspace for S24 RoboticsII
+```
 Group 3 Members: 
 Christina Cavalluzzo, RIN 662005890
 Gabriela Crother-Collado, RIN 662021320
 Ziqiao Fang, RIN 661978765
 Yunyoung Park, RIN 662054365
-
+```
 
 For robot issues, please refer to [this document](https://www.overleaf.com/read/jckcnqkwytvb#22a42e).
 
