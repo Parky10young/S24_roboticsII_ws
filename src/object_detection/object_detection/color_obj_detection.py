@@ -67,6 +67,7 @@ class ColorObjDetectionNode(Node):
         self.br = CvBridge()
         
         # Create a transform listener
+        
         self.tf_buffer = Buffer()
         self.tf_listener = TransformListener(self.tf_buffer, self)
         
