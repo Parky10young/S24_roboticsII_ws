@@ -81,7 +81,7 @@ class TrackingNode(Node):
         self.sub_detected_obj_pose = self.create_subscription(PoseStamped, '/detected_color_object_pose', self.detected_obj_pose_callback, 10)
         
         # PID controller parameters
-        self.kp_linear = 1.0  # Proportional gain for linear velocity
+        self.kp_linear = -1.0  # Proportional gain for linear velocity
         self.ki_linear = 0.0  # Integral gain for linear velocity
         self.kd_linear = 0.0  # Derivative gain for linear velocity
         self.kp_angular = 1.0  # Proportional gain for angular velocity
